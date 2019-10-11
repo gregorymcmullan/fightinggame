@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 public class Characters
 	{
@@ -6,6 +7,9 @@ public class Characters
 static Scanner choice = new Scanner(System.in);
 static boolean stillAllive;
 static int computerChoice = (int) (Math.random()* fighter.size());
+static boolean ifHit;
+static boolean isTurn;
+public static Random decision = new Random();
 		public static void main(String[] args)
 	{
 		Characters.warriorList();
@@ -13,10 +17,10 @@ static int computerChoice = (int) (Math.random()* fighter.size());
 		Characters.fightStuff();
 	}
 	public static void warriorList() {
-		fighter.add(new Fight("1) "+" Heavy,"," Shield and longsword ", 175));
-		fighter.add(new Fight("2) "+" Vanguard,"," Poleaxe ",150));
-		fighter.add(new Fight("3) "+" Assasin,"," short sword and dagger ",100));
-		fighter.add(new Fight("4) "+" Hybrid,"," Flail and sheild ",160));
+		fighter.add(new Fight("1) "+" Heavy,"," Shield and longsword Hp:", 175 , 10, " Skill: Charge", 25));
+		fighter.add(new Fight("2) "+" Vanguard,"," Poleaxe ",150 ,  13," Skill: Shoulder Bash", 18));
+		fighter.add(new Fight("3) "+" Assasin,"," short sword and dagger ",100,15," Skill: Backstab ",30));
+		fighter.add(new Fight("4) "+" Hybrid,"," Flail and sheild ",160,12," Skill: Sheild Charge",20));
 		
 	}
 	public static void greetUser() {
@@ -32,7 +36,7 @@ static int computerChoice = (int) (Math.random()* fighter.size());
 			System.out.println("ok here are your fighters");
 			System.out.println();
 			for(Fight f:fighter) {
-				System.out.println(f.getWarrior()+f.getWeapon()+f.getHp());
+				System.out.println(f.getWarrior()+f.getWeapon()+f.getHp() + f.getDamager() + f.getSkill());
 			}if(myChoice.equals("o")) {
 				System.out.println("ok the game is played like a fighting game your goal is to beat your opponet."
 						+ " The way you do this is by depleting your opponets HP to zero or below it. the attacks to deplet HP are basic"
@@ -62,32 +66,66 @@ static int computerChoice = (int) (Math.random()* fighter.size());
 		Scanner player= new Scanner(System.in);
 		int characterChoice= player.nextInt();
 		Fight myFighter= fighter.get(characterChoice-1);
-System.out.println("You chose " + myFighter);
-		int heavyHp = 175;
-		Fight myHp = myFighter;
-		int vanguardHp=150;
-		int assasinHp=100;
-		int hybridHp = 165;
-		int heavyLight = 10;
-		int heavyHeavy = 25;
-		int vanguardLight = 13;
-		int vanguardHeavy = 30;
-		int assasinLight = 15;
-		int assasinHeavy = 40;
-		int hybridLight = 12;
-		int hybridHeavy = 27;
-		int opponetCharIndex = (int) (Math.random()*4);
+System.out.println(myFighter.getWarrior());
+Fight aiFighter = fighter.get(computerChoice);
+System.out.println("the computer will be playing as...");
+System.out.println(aiFighter.getWarrior());
+System.out.println("Arlight then LETS GET READY TO RUMBLE");
+	
+
+		double myHp = myFighter.getHp();
+		double compHp = aiFighter.getHp();
+	int opponetCharIndex= (int) (Math.random()*4);
 		int attackChoice = (int)(Math.random()*20);
-		int damage;
-		Fight	opponetChar = fighter.get(opponetCharIndex);
-			if(attackChoice >=1 && attackChoice <=10) {
-				  
+		int damage = decision.nextInt();
+		try {
+			Thread.sleep(1000);
+		}catch(InterruptedException ex) {
+			Thread.currentThread().interrupt();
+			System.out.println("interrupted delay!");
+		}
+		double oHp = aiFighter.getHp();
+	
+	while(myHp>0&&compHp>0) {
+		Scanner command = new Scanner(System.in);
+			
+			System.out.println("press 1 to throw an attack and 2 to use a skill");
+			String input = command.nextLine();
+			if(isTurn) {
+				compHp-=myFighter.getDamager();
+				myFighter.getHp();
+				if(compHp<0) {
+					compHp=0;
+				}
+				if(isTurn && input.equals("1")) {
+			System.out.println("You hit a Attack " + myFighter.getDamager() + " and now your opponet has " + compHp + " Hitpoints" );
+			isTurn = false;
+				}
+			if(isTurn && input.equals("2")){
+				
+				compHp-=myFighter.getSkillDamage();
+				if(compHp<0) {
+					compHp=0;
+					
+				}
+			System.out.println("you hit your special skill for " + myFighter.getSkillDamage() + " now the opponent has " + compHp +" Hitpoints");
+			isTurn = false;
+			}
+					
+				
+			
+			
+			}else {
+				myHp-= aiFighter.getDamager();
+				if(myHp<0) {
+					myHp=0;
+					}
+				System.out.println(" Your opponent hit " + aiFighter.getDamager() + " and now you have " + myHp + " Hitpoints");
+			isTurn = true;
 			}
 		
-			
-	
 	}
-	public static void reactionTime() {
-	
-	
-	}}
+		
+	}
+
+}
